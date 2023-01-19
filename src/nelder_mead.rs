@@ -66,13 +66,13 @@ where T: Fn(&Parameters) -> f64
                 simplex.pop();
                 simplex.push(x_r);
             } else {
-                let x_c = shift(&simplex[dimension], &x_o, 2.0);
+                let x_c = shift(&simplex[dimension], &x_o, 0.5);
                 if cost_function(&x_c) < f_x_n {
                     simplex.pop();
                     simplex.push(x_c);
                 } else {
                     for i in 1..=dimension {
-                        simplex[i] = shift(&simplex[i], &simplex[0], 2.0);
+                        simplex[i] = shift(&simplex[i], &simplex[0], 0.5);
                     }
                 }
             }
