@@ -1,5 +1,5 @@
 #[allow(dead_code)]
-mod nelder_mead;
+pub mod nelder_mead;
 
 type Parameters = Vec<f64>;
 
