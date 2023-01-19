@@ -1,5 +1,6 @@
 use super::Parameters;
 use super::distance;
+use std::io::{BufWriter, StderrLock, Write};
 
 pub fn shift(target: &Parameters, center: &Parameters, coef: f64) -> Parameters {
     target.iter().zip(center.iter()).map(|(t, c)| {
@@ -7,7 +8,7 @@ pub fn shift(target: &Parameters, center: &Parameters, coef: f64) -> Parameters 
     }).collect()
 }
 
-pub fn optimize<T>(init: &Parameters, cost_function: T, delta: f64, epsilon: f64, lambda: f64) -> Parameters
+pub fn optimize<T>(init: &Parameters, cost_function: T, delta: f64, epsilon: f64, lambda: f64, mut err: BufWriter<StderrLock>) -> Parameters
 where T: Fn(&Parameters) -> f64
 {
     let dimension = init.len();
@@ -32,7 +33,7 @@ where T: Fn(&Parameters) -> f64
         let f_x_0 = cost_function(&simplex[0]);
         let f_x_n = cost_function(&simplex[dimension]);
 
-        println!("{:?}", f_x_0);
+        writeln!(err, "{:?}", f_x_0).expect("");
 
         if {
             (f_x_n - f_x_0 < epsilon)
