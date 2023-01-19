@@ -33,7 +33,7 @@ where T: Fn(&Parameters) -> f64
         let f_x_0 = cost_function(&simplex[0]);
         let f_x_n = cost_function(&simplex[dimension]);
 
-        writeln!(err, "{:?}", f_x_0).expect("");
+        writeln!(err, "{:?} {:?}", f_x_0, f_x_n).expect("");
 
         if {
             (f_x_n - f_x_0 < epsilon)
