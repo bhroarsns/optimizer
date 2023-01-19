@@ -27,7 +27,11 @@ where T: Fn(&Parameters) -> f64
     }).collect();
 
     loop {
-        simplex.sort_unstable_by(|a, b| cost_function(&a).partial_cmp(&cost_function(&b)).unwrap());
+        simplex.sort_unstable_by(|a, b| {
+            println!("{:?}", a);
+            println!("{:?}", b);
+            cost_function(&a).partial_cmp(&cost_function(&b)).unwrap()
+        });
 
         let f_x_0 = cost_function(&simplex[0]);
         let f_x_n = cost_function(&simplex[dimension]);
