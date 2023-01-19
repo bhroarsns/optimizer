@@ -7,7 +7,9 @@ pub fn shift(target: &Parameters, center: &Parameters, coef: f64) -> Parameters 
     }).collect()
 }
 
-pub fn optimize(init: &Parameters, cost_function: fn(&Parameters) -> f64, delta: f64, epsilon: f64, lambda: f64) -> Parameters {
+pub fn optimize<T>(init: &Parameters, cost_function: T, delta: f64, epsilon: f64, lambda: f64) -> Parameters
+where T: Fn(&Parameters) -> f64
+{
     let dimension = init.len();
 
     let mut simplex: Vec<Parameters> = (0..=dimension).map(|i| {
