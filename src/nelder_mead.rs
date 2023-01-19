@@ -32,6 +32,8 @@ where T: Fn(&Parameters) -> f64
         let f_x_0 = cost_function(&simplex[0]);
         let f_x_n = cost_function(&simplex[dimension]);
 
+        println!("{:?}", f_x_0);
+
         if {
             (f_x_n - f_x_0 < epsilon)
             && (distance(&simplex[0], &simplex[dimension]) < delta)
