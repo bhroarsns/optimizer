@@ -8,7 +8,7 @@ pub fn shift(target: &Parameters, center: &Parameters, coef: f64) -> Parameters 
     }).collect()
 }
 
-pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_function: T, delta: f64, epsilon: f64, lambda: f64, log: Option<BufWriter<W>>) -> Parameters {
+pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_function: T, delta: f64, epsilon: f64, lambda: Vec<f64>, log: Option<BufWriter<W>>) -> Parameters {
     let dimension = init.len();
 
     let mut simplex: Vec<Parameters> = (0..=dimension).map(|i| {
@@ -17,7 +17,7 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
         } else {
             init.iter().enumerate().map(|(j, x)| {
                 if j == (i - 1) {
-                    x + lambda
+                    x + lambda[j]
                 } else {
                     *x
                 }
@@ -33,7 +33,7 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
                 let f_x_0 = cost_function(&simplex[0]);
                 let f_x_n = cost_function(&simplex[dimension]);
 
-                writeln!(out, "{} {}", f_x_0, f_x_n).expect("");
+                writeln!(out, "{:?} {} {}", simplex, f_x_0, f_x_n).expect("");
 
                 if {
                     (f_x_n - f_x_0 < epsilon)
