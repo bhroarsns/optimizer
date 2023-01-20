@@ -5,7 +5,7 @@ type Parameters = Vec<f64>;
 use std::f64::EPSILON;
 
 pub fn is_indistinguishable(x: &Parameters, y: &Parameters, coef: f64) -> bool {
-    x.iter().zip(y.iter()).map(|(xx, yy)| if *xx == 0.0 {(xx - yy) * coef} else {(xx - yy) * coef / xx}).any(|d| d.abs() < coef * EPSILON)
+    x.iter().zip(y.iter()).map(|(xx, yy)| if *xx == 0.0 {(xx - yy) * coef} else {(xx - yy) * coef / xx}).all(|d| d.abs() < coef * EPSILON)
 }
 
 #[cfg(test)]
