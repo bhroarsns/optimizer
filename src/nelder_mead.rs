@@ -33,7 +33,7 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
                 let f_x_0 = cost_function(&simplex[0]);
                 let f_x_n = cost_function(&simplex[dimension]);
 
-                writeln!(out, "{:?} {} {}", simplex, f_x_0, f_x_n).expect("");
+                write!(out, "{:?} {} {}", simplex, f_x_0, f_x_n).expect("");
 
                 if {
                     (f_x_n - f_x_0 < epsilon)
@@ -57,23 +57,28 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
                     if cost_function(&x_e) < f_x_r {
                         simplex.pop();
                         simplex.push(x_e);
+                        writeln!(out, "-> expand").expect("");
                     } else {
                         simplex.pop();
                         simplex.push(x_r);
+                        writeln!(out, "-> reflect1").expect("");
                     }
                 } else {
                     if f_x_r < cost_function(&simplex[dimension - 1]) {
                         simplex.pop();
                         simplex.push(x_r);
+                        writeln!(out, "-> reflect2").expect("");
                     } else {
                         let x_c = shift(&simplex[dimension], &x_o, 0.5);
                         if cost_function(&x_c) < f_x_n {
                             simplex.pop();
                             simplex.push(x_c);
+                            writeln!(out, "-> contract1").expect("");
                         } else {
                             for i in 1..=dimension {
                                 simplex[i] = shift(&simplex[i], &simplex[0], 0.5);
                             }
+                            writeln!(out, "-> contract2").expect("");
                         }
                     }
                 }
