@@ -1,5 +1,5 @@
 use super::Parameters;
-use super::distance;
+use super::is_indistinguishable;
 use std::io::{BufWriter, Write};
 
 pub fn shift(target: &Parameters, center: &Parameters, coef: f64) -> Parameters {
@@ -8,7 +8,7 @@ pub fn shift(target: &Parameters, center: &Parameters, coef: f64) -> Parameters 
     }).collect()
 }
 
-pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_function: T, delta: f64, epsilon: f64, lambda: Vec<f64>, log: Option<BufWriter<W>>) -> Parameters {
+pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_function: T, epsilon: f64, lambda: Vec<f64>, log: Option<BufWriter<W>>) -> Parameters {
     let dimension = init.len();
 
     let mut simplex: Vec<Parameters> = (0..=dimension).map(|i| {
@@ -35,10 +35,7 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
 
                 write!(out, "{:?} {} {}", simplex, f_x_0, f_x_n).expect("");
 
-                if {
-                    ((f_x_n - f_x_0) / f_x_0 < epsilon)
-                    && (distance(&simplex[0], &simplex[dimension]) / *(simplex[0].iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap()) < delta)
-                } {
+                if ((f_x_n - f_x_0) / f_x_0 < epsilon) || is_indistinguishable(&simplex[0], &simplex[dimension], 0.5) {
                     break;
                 }
 
@@ -76,9 +73,7 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
                             writeln!(out, "-> contract1").expect("");
                         } else {
                             for i in 1..=dimension {
-                                let shifted = shift(&simplex[i], &simplex[0], 0.5);
-                                write!(out, " {}: {:?}->{:?} ", i, simplex[i], shifted).expect("");
-                                simplex[i] = shifted;
+                                simplex[i] = shift(&simplex[i], &simplex[0], 0.5);
                             }
                             writeln!(out, "-> contract2").expect("");
                         }
@@ -93,10 +88,7 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
                 let f_x_0 = cost_function(&simplex[0]);
                 let f_x_n = cost_function(&simplex[dimension]);
 
-                if {
-                    (f_x_n - f_x_0 < epsilon)
-                    && (distance(&simplex[0], &simplex[dimension]) < delta)
-                } {
+                if ((f_x_n - f_x_0) / f_x_0 < epsilon) || is_indistinguishable(&simplex[0], &simplex[dimension], 0.5) {
                     break;
                 }
 

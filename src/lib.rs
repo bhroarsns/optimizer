@@ -2,9 +2,10 @@
 pub mod nelder_mead;
 
 type Parameters = Vec<f64>;
+use std::f64::EPSILON;
 
-pub fn distance(x: &Parameters, y: &Parameters) -> f64 {
-    x.iter().zip(y.iter()).map(|(xx, yy)| (xx - yy) * (xx - yy)).sum::<f64>().sqrt()
+pub fn is_indistinguishable(x: &Parameters, y: &Parameters, coef: f64) -> bool {
+    x.iter().zip(y.iter()).map(|(xx, yy)| if *xx == 0.0 {(xx - yy) * coef} else {(xx - yy) * coef / xx}).any(|d| d.abs() < coef * EPSILON)
 }
 
 #[cfg(test)]
