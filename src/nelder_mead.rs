@@ -36,8 +36,8 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
                 write!(out, "{:?} {} {}", simplex, f_x_0, f_x_n).expect("");
 
                 if {
-                    (f_x_n - f_x_0 < epsilon)
-                    && (distance(&simplex[0], &simplex[dimension]) < delta)
+                    ((f_x_n - f_x_0) / f_x_0 < epsilon)
+                    && (distance(&simplex[0], &simplex[dimension]) / *(simplex[0].iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap()) < delta)
                 } {
                     break;
                 }

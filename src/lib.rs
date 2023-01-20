@@ -18,4 +18,8 @@ mod tests {
         let coef = 2.0;
         assert_eq!(vec![2.0, 4.0], nelder_mead::shift(&target, &center, coef));
     }
+
+    #[test]
+    fn bug_fix() {
+    }
 }
