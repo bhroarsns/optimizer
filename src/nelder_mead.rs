@@ -76,7 +76,9 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
                             writeln!(out, "-> contract1").expect("");
                         } else {
                             for i in 1..=dimension {
-                                simplex[i] = shift(&simplex[i], &simplex[0], 0.5);
+                                let shifted = shift(&simplex[i], &simplex[0], 0.5);
+                                write!(out, " {}: {:?}->{:?} ", i, simplex[i], shifted).expect("");
+                                simplex[i] = shifted;
                             }
                             writeln!(out, "-> contract2").expect("");
                         }
