@@ -35,7 +35,13 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
 
                 write!(out, "{:?} {} {}", simplex, f_x_0, f_x_n).expect("");
 
-                if ((f_x_n - f_x_0) / f_x_0 < epsilon) || is_indistinguishable(&simplex[0], &simplex[dimension], 0.5) {
+                if (f_x_n - f_x_0) / f_x_0 < epsilon {
+                    writeln!(out, " iteration stopped because the percision rate reached the required value.").expect("");
+                    break;
+                }
+                
+                if is_indistinguishable(&simplex[0], &simplex[dimension], 0.5) {
+                    writeln!(out, " iteration stopped because two vertices of the simplex got indistinguishable.").expect("");
                     break;
                 }
 
@@ -88,7 +94,11 @@ pub fn optimize<T: Fn(&Parameters) -> f64, W: Write>(init: &Parameters, cost_fun
                 let f_x_0 = cost_function(&simplex[0]);
                 let f_x_n = cost_function(&simplex[dimension]);
 
-                if ((f_x_n - f_x_0) / f_x_0 < epsilon) || is_indistinguishable(&simplex[0], &simplex[dimension], 0.5) {
+                if (f_x_n - f_x_0) / f_x_0 < epsilon {
+                    break;
+                }
+                
+                if is_indistinguishable(&simplex[0], &simplex[dimension], 0.5) {
                     break;
                 }
 
